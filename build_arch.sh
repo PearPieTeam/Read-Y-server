@@ -10,6 +10,8 @@ cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
 make
 sudo make install
 
+cd ../..
+
 #Clone libpqcxx library
 git clone https://github.com/jtv/libpqxx.git
 cd libpqcxx
