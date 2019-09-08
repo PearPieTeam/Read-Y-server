@@ -3,7 +3,8 @@ project(ServerBackend)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(PROJECT_INCLUDE_DIR "libs")
+set(SKIP_BUILD_TEST OFF)
+
 set(PISTACHE_INCLUDE_DIR "libs/pistache/include")
 set(RAPIDJSON_INCLUDE_DIR "libs/pistache/third-party/rapidjson/include")
 set(LIBPQXX_INCLUDE_DIR "libs/libpqxx/include")
@@ -21,11 +22,8 @@ file(GLOB PISTACHE_SRC "libs/pistache/src/common/*.cc" "libs/pistache/src/client
 file(GLOB LIBPQXX_SRC "libs/libpqxx/src/*.cxx")
 file(GLOB UTILS_FILES "utils/*.h" "utils/*.cpp")
 
-#find_package(pistache)
-
 add_subdirectory("libs/pistache")
 add_subdirectory("libs/libpqxx")
-#add_subdirectory("libs/pistache/third-party/rapidjson")
 
 add_executable(${PROJECT_NAME} src/main.cpp ${PISTACHE_SRC} ${LIBPQXX_SRC} ${UTILS_FILES})
 
