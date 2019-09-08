@@ -16,7 +16,7 @@ public:
 
     //Request
     void onRequest(const Http::Request& request, Http::ResponseWriter response) override{
-        UNUSED(request);
+        UNUSED(request)
 
         auto hostIP = response.peer().get()->address().host();
 
@@ -30,12 +30,11 @@ public:
             response.send(Pistache::Http::Code::Forbidden, "There's nothing here =_=");
 
         cout << "IP: " << hostIP << endl;
-        //response.send(Pistache::Http::Code::Ok, "Hello World\n");
     }
 
     //Timeout
-    void onTimeout(const Http::Request& req, Http::ResponseWriter response) override {
-        UNUSED(req);
+    void onTimeout(const Http::Request& reqest, Http::ResponseWriter response) override {
+        UNUSED(reqest);
         response.send(Http::Code::Request_Timeout, "Timeout").then([=](ssize_t) { }, PrintException());
     }
 };
