@@ -1,0 +1,6 @@
+[submodule "libs/pistache"]
+	path = libs/pistache
+	url = https://github.com/oktal/pistache
+[submodule "libs/libpqxx"]
+	path = libs/libpqxx
+	url = https://github.com/jtv/libpqxx.git
