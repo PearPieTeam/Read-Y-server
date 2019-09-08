@@ -1,13 +1,16 @@
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 #include <pistache/endpoint.h>
 #include "../utils/utils.h"
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>
+#include <rapidjson/filewritestream.h>
 
-using namespace Pistache;
+using namespace pistache;
 using namespace std;
+using namespace rapidjson;
 
 class RequestHandler : public Http::Handler {
 public:
@@ -22,13 +25,31 @@ public:
         response.headers().add<Http::Header::Server>("Pistache/0.1");
 
         if (request.resource() == "/ip" && request.method() == Http::Method::Get) {
-            response.send(Pistache::Http::Code::Ok, "IP: " + hostIP);
+            response.send(Http::Code::Ok, "IP: " + hostIP);
         } else if (request.resource() == "/osinfo" && request.method() == Http::Method::Get) {
             Http::serveFile(response, "lsb.txt");
-        } else
-            response.send(Pistache::Http::Code::Forbidden, "There's nothing here =_=");
+        }
+        else if (request.resource() == "/register" && request.method() == Http::Method::Post) {
 
-        cout << "IP: " << hostIP << endl;
+            /*Document document;
+            document.Parse(request.body().c_str());
+
+            FILE* fp = fopen("test.json", "w");
+            char writeBuffer[65536];
+            FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+
+            Writer<FileWriteStream> writer(os);
+            document.Accept(writer);
+
+            fclose(fp);*/
+
+
+
+            cout << request.body() << endl;
+
+            response.send(Http::Code::Ok);
+        } else
+            response.send(Http::Code::Forbidden, "There's nothing here =_=");
     }
 
     //Timeout
@@ -43,8 +64,11 @@ int main() {
 
     Utils::commandToFile("lsb_release -a", "lsb.txt");
 
-    Pistache::Address addr(Pistache::Ipv4::any(), Pistache::Port(9080));
-    auto opts = Pistache::Http::Endpoint::options().threads(1);
+    //TODO
+    DataBaseUtils::establishConnection();
+
+    pistache::Address addr(pistache::Ipv4::any(), pistache::Port(9080));
+    auto opts = pistache::Http::Endpoint::options().threads(1);
 
     Http::Endpoint server(addr);
     server.init(opts);
