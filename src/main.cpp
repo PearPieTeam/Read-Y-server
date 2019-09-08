@@ -1,8 +1,6 @@
 #include <iostream>
-//#include <nlohmann/json.hpp>
 #include <iomanip>
 #include <pistache/endpoint.h>
-#include <fstream>
 #include "../utils/utils.h"
 //#include <pistache/third-party/rapidjson/include/rapidjson/document.h>
 //#include <pistache/third-party/rapidjson/include/rapidjson/writer.h>
@@ -15,7 +13,6 @@ using namespace std;
 class RequestHandler : public Http::Handler {
 public:
     HTTP_PROTOTYPE(RequestHandler)
-    //nlohmann::json dbJson;
 
     //Request
     void onRequest(const Http::Request& request, Http::ResponseWriter response) override{
@@ -31,23 +28,6 @@ public:
             Http::serveFile(response, "lsb.txt");
         } else
             response.send(Pistache::Http::Code::Forbidden, "There's nothing here =_=");
-
-/*
-
-        //auto hostname = response.peer().get()->hostname();
-
-        //neofetchFile.close();
-
-        //getline(hostIP, neofetchFile);
-
-        //JSON database save
-
-        //dbJson["userlist"][user_count]["ip"] = hostIP;
-
-
-        /*ofstream jsonFile("database.json");
-        jsonFile << dbJson;
-        jsonFile.close();*/
 
         cout << "IP: " << hostIP << endl;
         //response.send(Pistache::Http::Code::Ok, "Hello World\n");
