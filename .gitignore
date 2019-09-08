@@ -1,9 +1,6 @@
 # Build files
 build
 
-#third-party libs
-libs
-
 # Compiled Object files
 *.slo
 *.lo
