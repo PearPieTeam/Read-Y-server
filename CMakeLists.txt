@@ -20,6 +20,12 @@ file(GLOB PISTACHE_SRC "libs/pistache/src/common/*.cc" "libs/pistache/src/client
 file(GLOB LIBPQXX_SRC "libs/libpqxx/src/*.cxx")
 file(GLOB UTILS_FILES "utils/*.h" "utils/*.cpp")
 
+#find_package(pistache)
+
+add_subdirectory("libs/pistache")
+add_subdirectory("libs/libpqxx")
+#add_subdirectory("libs/pistache/third-party/rapidjson")
+
 add_executable(${PROJECT_NAME} src/main.cpp ${PISTACHE_SRC} ${LIBPQXX_SRC} ${UTILS_FILES})
 
 target_link_libraries(${PROJECT_NAME} ${LIBRARIES_SEARCH_PATHS})

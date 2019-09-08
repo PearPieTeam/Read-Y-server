@@ -8,7 +8,7 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/filewritestream.h>
 
-using namespace pistache;
+using namespace Pistache;
 using namespace std;
 using namespace rapidjson;
 
@@ -67,8 +67,8 @@ int main() {
     //TODO
     DataBaseUtils::establishConnection();
 
-    pistache::Address addr(pistache::Ipv4::any(), pistache::Port(9080));
-    auto opts = pistache::Http::Endpoint::options().threads(1);
+    Pistache::Address addr(Pistache::Ipv4::any(), Pistache::Port(9080));
+    auto opts = Pistache::Http::Endpoint::options().threads(1);
 
     Http::Endpoint server(addr);
     server.init(opts);
