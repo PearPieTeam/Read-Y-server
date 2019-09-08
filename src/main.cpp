@@ -2,9 +2,9 @@
 #include <iomanip>
 #include <pistache/endpoint.h>
 #include "../utils/utils.h"
-//#include <pistache/third-party/rapidjson/include/rapidjson/document.h>
-//#include <pistache/third-party/rapidjson/include/rapidjson/writer.h>
-//#include <pistache/third-party/rapidjson/include/rapidjson/stringbuffer.h>
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/stringbuffer.h>
 
 
 using namespace Pistache;
