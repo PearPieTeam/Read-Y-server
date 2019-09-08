@@ -15,12 +15,10 @@ cd ../..
 #Clone libpqcxx library
 git clone https://github.com/jtv/libpqxx.git
 cd libpqcxx
-mkdir build
-cd build
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
 
 #Build project
-cd ../../..
+cd ../..
 mkdir build
 cd build
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
