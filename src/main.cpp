@@ -34,7 +34,7 @@ public:
 
     //Timeout
     void onTimeout(const Http::Request& reqest, Http::ResponseWriter response) override {
-        UNUSED(reqest);
+        UNUSED(reqest)
         response.send(Http::Code::Request_Timeout, "Timeout").then([=](ssize_t) { }, PrintException());
     }
 };
