@@ -4,14 +4,13 @@
 #include <pistache/endpoint.h>
 #include <fstream>
 #include "../utils/utils.h"
-#include <pistache/third-party/rapidjson/include/rapidjson/document.h>
+//#include <pistache/third-party/rapidjson/include/rapidjson/document.h>
 //#include <pistache/third-party/rapidjson/include/rapidjson/writer.h>
 //#include <pistache/third-party/rapidjson/include/rapidjson/stringbuffer.h>
 
 
 using namespace Pistache;
 using namespace std;
-using namespace rapidjson;
 
 class RequestHandler : public Http::Handler {
 public:
