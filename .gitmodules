@@ -1,0 +1,5 @@
+[submodule "libs/pistache"]
+	path = libs/pistache
+	url = https://github.com/oktal/pistache
+	branch = master
+
