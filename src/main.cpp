@@ -6,7 +6,6 @@
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>
 
-
 using namespace Pistache;
 using namespace std;
 
