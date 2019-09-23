@@ -33,6 +33,7 @@ void DataBaseUtils::establishConnection() {
         } else {
             cout << "Can't open database" << endl;
         }
+        C.close();
         //C.disconnect ();
     } catch (const std::exception &e) {
         cerr << e.what() << std::endl;
