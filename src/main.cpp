@@ -5,6 +5,7 @@
 #include "../utils/utils.h"
 #include "../utils/base64.h"
 #include "../utils/base64.cpp"
+#include "../utils/executor.h"
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>
@@ -56,12 +57,15 @@ public:
             Document document;
             document.Parse(request.body().c_str());
 
-            if (!document.HasMember("program") || (!document["program"].HasMember("arguments") || !document["program"].HasMember("base64") || !document["program"].HasMember("output_file"))) {
+            if (!document.HasMember("expression")) {
                 response.send(Http::Code::Bad_Request);
                 return;
             }
 
-            if (!document.HasMember("dependencies") || (!document["dependencies"].HasMember("file_name") || !document["dependencies"].HasMember("base64"))) {
+            string expression = document["expression"].GetString();
+
+            //TODO Compiler
+            /*if (!document.HasMember("program") || (!document["program"].HasMember("arguments") || !document["program"].HasMember("base64") || !document["program"].HasMember("output_file"))) {
                 response.send(Http::Code::Bad_Request);
                 return;
             }
@@ -70,17 +74,16 @@ public:
                 string base64_file = document["program"]["base64"].GetString();
                 string output_file_name = document["program"]["output_file"].GetString();
 
-                string dependency_file_name = document["dependencies"]["file_name"].GetString();
-                string dependency_base64_file = document["dependencies"]["base64"].GetString();
+                vector<string> dependency_files_names;
+                vector<string> dependency_base64_files;
 
-            /*FILE* fp = fopen("request.json", "w");
-            char writeBuffer[65536];
-            FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+            for (Value::ConstMemberIterator itr = document["program"]["dependencies"].MemberBegin();
+                 itr != document["program"]["dependencies"].MemberEnd(); ++itr)
+            {
+                dependency_files_names.push_back(itr->name.GetString());
+                dependency_base64_files.push_back(itr->value["base64"].GetString());
 
-            Writer<FileWriteStream> writer(os);
-            document.Accept(writer);
-
-            fclose(fp);*/
+            }
 
             //base64 decoding and writing to file
             string decodedString;
@@ -94,12 +97,15 @@ public:
                 file.close();
             }
 
-            decodedString = Base64::decode(dependency_base64_file.c_str(), dependency_base64_file.size());
+            for (int i = 0; i < dependency_files_names.size(); i++) {
 
-            file.open("files/" + dependency_file_name);
-            if (file.is_open()) {
-                file.write(decodedString.c_str(), decodedString.length());
-                file.close();
+                decodedString = Base64::decode(dependency_base64_files[i].c_str(), dependency_base64_files[i].size());
+
+                 file.open("files/" + dependency_files_names[i]);
+                if (file.is_open()) {
+                    file.write(decodedString.c_str(), decodedString.length());
+                    file.close();
+                }
             }
 
             //Construct build command and run it
@@ -109,11 +115,7 @@ public:
             {
                 response.send(Http::Code::I_m_a_teapot);
                 return;
-            }
-
-            //cout << decodedString << endl;
-
-            //cout << request.body() << endl;
+            }*/
 
             response.send(Http::Code::Ok);
         }
