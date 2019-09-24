@@ -4,7 +4,6 @@
 #include <pistache/endpoint.h>
 #include "../utils/utils.h"
 #include "../utils/base64.h"
-#include "../utils/base64.cpp"
 #include "../utils/executor.h"
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
@@ -26,7 +25,7 @@ public:
 
         auto hostIP = response.peer().get()->address().host();
 
-        response.headers().add<Http::Header::Server>("Pistache/0.1");
+        //response.headers().add<Http::Header::Server>("Pistache/0.1");
 
         if (request.resource() == "/ip" && request.method() == Http::Method::Get) {
             response.send(Http::Code::Ok, "IP: " + hostIP);
@@ -54,6 +53,10 @@ public:
         }
         else if (request.resource() == "/compile/cpp" && request.method() == Http::Method::Post) {
 
+            response.headers().add<Http::Header::Server>("Huyina/0.1");
+
+            cout << request.body() << endl;
+
             Document document;
             document.Parse(request.body().c_str());
 
@@ -62,7 +65,14 @@ public:
                 return;
             }
 
+            //cout << request.body() << endl;
+
             string expression = document["expression"].GetString();
+
+            if (executeCode(expression, "./files/result.txt")) {
+                response.send(Http::Code::I_m_a_teapot);
+                return;
+            }
 
             //TODO Compiler
             /*if (!document.HasMember("program") || (!document["program"].HasMember("arguments") || !document["program"].HasMember("base64") || !document["program"].HasMember("output_file"))) {
@@ -117,7 +127,12 @@ public:
                 return;
             }*/
 
-            response.send(Http::Code::Ok);
+            //fopen()
+
+
+            //response.send(Http::Code::Ok, "");
+            cout << "Request readed!" << endl;
+            Http::serveFile(response, "./files/result.txt");
         }
         else
             response.send(Http::Code::Forbidden, "There's nothing here =_=");
