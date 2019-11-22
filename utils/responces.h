@@ -18,8 +18,9 @@ namespace Responces {
         /*msg.nickname = document["nickname"].GetString();
         msg.text = document["message"].GetString();
         messagesBuffer.push_back(msg);*/
-        cout << ctime(&end_time)<< endl;
+        cout << ctime(&end_time) << endl;
 
+        cout << request.body() << endl;
         //cout << msg.toJSONString() << endl;
     }
 
