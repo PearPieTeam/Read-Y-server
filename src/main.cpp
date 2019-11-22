@@ -9,7 +9,7 @@
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/filewritestream.h>
-
+#include "../utils/chat.h"
 
 using namespace Pistache;
 using namespace std;
@@ -20,19 +20,46 @@ public:
     HTTP_PROTOTYPE(RequestHandler)
 
     //Request
-    void onRequest(const Http::Request& request, Http::ResponseWriter response) override{
+    void onRequest(const Http::Request& request, Http::ResponseWriter response) override {
         UNUSED(request)
 
         auto hostIP = response.peer().get()->address().host();
 
         //response.headers().add<Http::Header::Server>("Pistache/0.1");
 
+        //Messages vector
+        vector<Chat::Message> messagesBuffer;
+        Chat::Message msg;
+
         if (request.resource() == "/ip" && request.method() == Http::Method::Get) {
             response.send(Http::Code::Ok, "IP: " + hostIP);
-        } else if (request.resource() == "/osinfo" && request.method() == Http::Method::Get) {
+        }
+        if (request.resource() == "/osinfo" && request.method() == Http::Method::Get) {
             Http::serveFile(response, "lsb.txt");
         }
-        else if (request.resource() == "/register" && request.method() == Http::Method::Post) {
+
+        //Chat
+        if (request.resource() == "/chat" && request.method() == Http::Method::Post) {
+
+            auto messageReciveTime = std::chrono::system_clock::now();
+            std::time_t end_time = std::chrono::system_clock::to_time_t(messageReciveTime);
+            Document document;
+            document.Parse(request.body().c_str());
+            msg.nickname = document["nickname"].GetString();
+            msg.text = document["message"].GetString();
+            messagesBuffer.push_back(msg);
+            cout << ctime(&end_time)<< endl;
+
+            cout << msg.toJSONString() << endl;
+
+            //Adding message to buffer
+            //TODO
+
+            response.send(Http::Code::Ok, msg.text);
+            return;
+        }
+
+        if (request.resource() == "/register" && request.method() == Http::Method::Post) {
 
             Document document;
             document.Parse(request.body().c_str());
@@ -46,12 +73,12 @@ public:
 
             fclose(file);
 
-
             cout << request.body() << endl;
 
             response.send(Http::Code::Ok);
         }
-        else if (request.resource() == "/compile/cpp" && request.method() == Http::Method::Post) {
+
+        if (request.resource() == "/compile/cpp" && request.method() == Http::Method::Post) {
 
             response.headers().add<Http::Header::Server>("Huyina/0.1");
 
@@ -129,13 +156,12 @@ public:
 
             //fopen()
 
-
             //response.send(Http::Code::Ok, "");
             cout << "Request readed!" << endl;
             Http::serveFile(response, "./files/result.txt");
         }
-        else
-            response.send(Http::Code::Forbidden, "There's nothing here =_=");
+
+        response.send(Http::Code::Forbidden, "There's nothing here =_=");
     }
 
     //Timeout
