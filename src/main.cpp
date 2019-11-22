@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <fstream>
 #include <pistache/endpoint.h>
+#include <pistache/http.h>
 #include "../utils/utils.h"
 #include "../utils/base64.h"
 #include "../utils/executor.h"
@@ -10,6 +11,7 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/filewritestream.h>
 #include "../utils/chat.h"
+#include "../utils/responces.h"
 
 using namespace Pistache;
 using namespace std;
@@ -31,134 +33,28 @@ public:
         vector<Chat::Message> messagesBuffer;
         Chat::Message msg;
 
+        //TODO Routes
+
         if (request.resource() == "/ip" && request.method() == Http::Method::Get) {
             response.send(Http::Code::Ok, "IP: " + hostIP);
+            return;
         }
         if (request.resource() == "/osinfo" && request.method() == Http::Method::Get) {
             Http::serveFile(response, "lsb.txt");
+            return;
         }
 
         //Chat
         if (request.resource() == "/chat" && request.method() == Http::Method::Post) {
-
-            auto messageReciveTime = std::chrono::system_clock::now();
-            std::time_t end_time = std::chrono::system_clock::to_time_t(messageReciveTime);
-            Document document;
-            document.Parse(request.body().c_str());
-            msg.nickname = document["nickname"].GetString();
-            msg.text = document["message"].GetString();
-            messagesBuffer.push_back(msg);
-            cout << ctime(&end_time)<< endl;
-
-            cout << msg.toJSONString() << endl;
-
-            //Adding message to buffer
-            //TODO
-
+            Responces::rChat(request);
             response.send(Http::Code::Ok, msg.text);
             return;
         }
 
         if (request.resource() == "/register" && request.method() == Http::Method::Post) {
-
-            Document document;
-            document.Parse(request.body().c_str());
-
-            FILE* file = fopen("test.json", "w");
-            char writeBuffer[65536];
-            FileWriteStream os(file, writeBuffer, sizeof(writeBuffer));
-
-            Writer<FileWriteStream> writer(os);
-            document.Accept(writer);
-
-            fclose(file);
-
-            cout << request.body() << endl;
-
+            Responces::rRegister(request);
             response.send(Http::Code::Ok);
-        }
-
-        if (request.resource() == "/compile/cpp" && request.method() == Http::Method::Post) {
-
-            response.headers().add<Http::Header::Server>("Huyina/0.1");
-
-            cout << request.body() << endl;
-
-            Document document;
-            document.Parse(request.body().c_str());
-
-            if (!document.HasMember("expression")) {
-                response.send(Http::Code::Bad_Request);
-                return;
-            }
-
-            //cout << request.body() << endl;
-
-            string expression = document["expression"].GetString();
-
-            if (executeCode(expression, "./files/result.txt")) {
-                response.send(Http::Code::I_m_a_teapot);
-                return;
-            }
-
-            //TODO Compiler
-            /*if (!document.HasMember("program") || (!document["program"].HasMember("arguments") || !document["program"].HasMember("base64") || !document["program"].HasMember("output_file"))) {
-                response.send(Http::Code::Bad_Request);
-                return;
-            }
-
-                string program_compile_args = document["program"]["arguments"].GetString();
-                string base64_file = document["program"]["base64"].GetString();
-                string output_file_name = document["program"]["output_file"].GetString();
-
-                vector<string> dependency_files_names;
-                vector<string> dependency_base64_files;
-
-            for (Value::ConstMemberIterator itr = document["program"]["dependencies"].MemberBegin();
-                 itr != document["program"]["dependencies"].MemberEnd(); ++itr)
-            {
-                dependency_files_names.push_back(itr->name.GetString());
-                dependency_base64_files.push_back(itr->value["base64"].GetString());
-
-            }
-
-            //base64 decoding and writing to file
-            string decodedString;
-
-            decodedString = Base64::decode(base64_file.c_str(), base64_file.size());
-
-            ofstream file;
-            file.open("files/input_file.cpp");
-            if (file.is_open()) {
-                file.write(decodedString.c_str(), decodedString.length());
-                file.close();
-            }
-
-            for (int i = 0; i < dependency_files_names.size(); i++) {
-
-                decodedString = Base64::decode(dependency_base64_files[i].c_str(), dependency_base64_files[i].size());
-
-                 file.open("files/" + dependency_files_names[i]);
-                if (file.is_open()) {
-                    file.write(decodedString.c_str(), decodedString.length());
-                    file.close();
-                }
-            }
-
-            //Construct build command and run it
-            string build_command("g++ " + program_compile_args + " files/input_file.cpp" + " -o " + "files/" + output_file_name);
-
-            if (system(build_command.c_str()))
-            {
-                response.send(Http::Code::I_m_a_teapot);
-                return;
-            }*/
-
-            //fopen()
-
-            //response.send(Http::Code::Ok, "");
-            cout << "Request readed!" << endl;
-            Http::serveFile(response, "./files/result.txt");
+            return;
         }
 
         response.send(Http::Code::Forbidden, "There's nothing here =_=");
@@ -177,7 +73,7 @@ int main() {
     Utils::commandToFile("lsb_release -a", "lsb.txt");
 
     //TODO
-    DataBaseUtils::establishConnection();
+    //DataBaseUtils::establishConnection();
 
     Pistache::Address addr(Pistache::Ipv4::any(), Pistache::Port(9080));
     auto opts = Pistache::Http::Endpoint::options().threads(1);
