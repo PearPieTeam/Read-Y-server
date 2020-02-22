@@ -29,10 +29,6 @@ public:
 
         //response.headers().add<Http::Header::Server>("Pistache/0.1");
 
-        //Messages vector
-        vector<Chat::Message> messagesBuffer;
-        Chat::Message msg;
-
         //TODO Routes
 
         if (request.resource() == "/ip" && request.method() == Http::Method::Get) {
@@ -47,7 +43,6 @@ public:
         //Chat
         if (request.resource() == "/chat" && request.method() == Http::Method::Post) {
             Responces::rChat(request);
-            response.send(Http::Code::Ok, msg.text);
             return;
         }
 
@@ -67,8 +62,40 @@ public:
     }
 };
 
+using connection = pqxx::connection;
+using work = pqxx::work;
+
 int main() {
     cout << "Server started!" << endl;
+
+    //connection chatDB = DataBaseUtils::establishConnection();
+
+    //work chatDBWork = DataBaseUtils::startWork(static_cast<connection &&>(chatDB));
+
+    /*connection c("dbname = Chat user = Admin password = 228995 hostaddr = 127.0.0.1 port = 5432");
+
+    work w(c);*/
+
+    //cout << chatDB.server_version() << endl;
+
+    /*pqxx::row r = w.exec1(
+            "SELECT avatar "
+            "FROM public.user "
+            "WHERE user_id=123 ");*/
+
+    /*chatDBWork.exec1(
+            "SELECT Nickname "
+            "FROM User ");*/
+
+    //int g = r[0].as<int>();
+
+    //cout << g << endl;
+
+
+
+
+
+    //
 
     Utils::commandToFile("lsb_release -a", "lsb.txt");
 

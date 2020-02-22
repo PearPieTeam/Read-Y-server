@@ -6,6 +6,7 @@
 #define SERVERBACKEND_UTILS_H
 
 #include <iostream>
+#include <pqxx/pqxx>
 
 using namespace std;
 
@@ -17,7 +18,9 @@ public:
 
 class DataBaseUtils {
 public:
-    static void establishConnection();
+    static pqxx::connection establishConnection();
+    static pqxx::work startWork(pqxx::connection c);
+    static void closeConnection(pqxx::connection c);
 };
 
 
