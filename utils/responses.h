@@ -1,0 +1,72 @@
+//
+// Created by xRoBoTx on 22.11.2019.
+//
+
+#ifndef SERVERBACKEND_RESPONSES_H
+#define SERVERBACKEND_RESPONSES_H
+
+#include "databaseController.h"
+
+using namespace Pistache;
+using namespace std;
+using namespace rapidjson;
+
+namespace Responses {
+
+    int rRegister(const Http::Request &request) {
+        Document document;
+        document.Parse(request.body().c_str());
+
+        string nickname = document["nickname"].GetString();
+        string password = document["password"].GetString();
+        string avatar = document["avatar"].GetString();
+
+        string sql = "INSERT INTO public.user (user_id, nickname, password, avatar) VALUES (uuid_generate_v4(), " +
+                     ControllerDB::chatDBWork->quote(nickname) + ", " + ControllerDB::chatDBWork->quote(password) +
+                     ", " + ControllerDB::chatDBWork->quote(avatar) + ")";
+
+        //cout << sql << endl;
+
+        try {
+            ControllerDB::chatDBWork->exec0(sql);
+            ControllerDB::chatDBWork->commit();
+            ControllerDB::chatDBWork = new pqxx::work(*ControllerDB::chatDB);
+        }
+
+        catch (const pqxx::sql_error &e) {
+            ControllerDB::chatDBWork->abort();
+            ControllerDB::chatDBWork = new pqxx::work(*ControllerDB::chatDB);
+            cerr << "SQL error: " << e.what() << endl
+                 << "Query was: " << e.query() << endl;
+            return -1;
+        }
+
+        return 0;
+    }
+
+    int rLogin(const Http::Request &request) {
+        string nickname = request.headers().getRaw("nickname").value();
+        string password = request.headers().getRaw("password").value();
+
+        string sql = "SELECT nickname FROM public.user WHERE nickname=" + ControllerDB::chatDBWork->quote(nickname) +
+                     " AND password=" + ControllerDB::chatDBWork->quote(password);
+
+        //cout << sql << endl;
+
+        try {
+            ControllerDB::chatDBWork->exec1(sql);
+            ControllerDB::chatDBWork->commit();
+            ControllerDB::chatDBWork = new pqxx::work(*ControllerDB::chatDB);
+        }
+
+        catch (const std::exception &e) {
+            cerr << "Exception: " << e.what() << endl;
+            return -1;
+        }
+
+        //cout << request.body() << endl;
+        return 0;
+    }
+}
+
+#endif //SERVERBACKEND_RESPONSES_H

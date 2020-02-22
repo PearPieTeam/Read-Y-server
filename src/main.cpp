@@ -11,7 +11,7 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/filewritestream.h>
 #include "../utils/chat.h"
-#include "../utils/responces.h"
+#include "../utils/responses.h"
 
 using namespace Pistache;
 using namespace std;
@@ -40,15 +40,19 @@ public:
             return;
         }
 
-        //Chat
-        if (request.resource() == "/chat" && request.method() == Http::Method::Post) {
-            Responces::rChat(request);
+        if (request.resource() == "/register" && request.method() == Http::Method::Post) {
+            if (Responses::rRegister(request) == 0)
+            response.send(Http::Code::Ok);
+            else
+                response.send(Http::Code::Bad_Request);
             return;
         }
 
-        if (request.resource() == "/register" && request.method() == Http::Method::Post) {
-            Responces::rRegister(request);
-            response.send(Http::Code::Ok);
+        if (request.resource() == "/login" && request.method() == Http::Method::Get) {
+            if (Responses::rLogin(request) == 0)
+                response.send(Http::Code::Ok);
+            else
+                response.send(Http::Code::Unauthorized);
             return;
         }
 
@@ -68,39 +72,17 @@ using work = pqxx::work;
 int main() {
     cout << "Server started!" << endl;
 
-    //connection chatDB = DataBaseUtils::establishConnection();
-
-    //work chatDBWork = DataBaseUtils::startWork(static_cast<connection &&>(chatDB));
-
-    /*connection c("dbname = Chat user = Admin password = 228995 hostaddr = 127.0.0.1 port = 5432");
-
-    work w(c);*/
-
-    //cout << chatDB.server_version() << endl;
-
-    /*pqxx::row r = w.exec1(
-            "SELECT avatar "
+    /*pqxx::row r = ControllerDB::chatDBWork->exec1(
+            "SELECT nickname "
             "FROM public.user "
-            "WHERE user_id=123 ");*/
+            "WHERE user_id='cddc3d74-c003-4019-b30a-2c5521c13f40' ");
 
-    /*chatDBWork.exec1(
-            "SELECT Nickname "
-            "FROM User ");*/
+    string g = r[0].as<string>();
 
-    //int g = r[0].as<int>();
+    cout << g << endl;*/
 
-    //cout << g << endl;
-
-
-
-
-
-    //
 
     Utils::commandToFile("lsb_release -a", "lsb.txt");
-
-    //TODO
-    //DataBaseUtils::establishConnection();
 
     Pistache::Address addr(Pistache::Ipv4::any(), Pistache::Port(9080));
     auto opts = Pistache::Http::Endpoint::options().threads(1);

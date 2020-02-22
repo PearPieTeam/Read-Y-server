@@ -7,9 +7,9 @@
 
 namespace ControllerDB {
 
-    pqxx::connection chatDB("dbname = Chat user = Admin password = 228995 hostaddr = 127.0.0.1 port = 5432");
+    pqxx::connection* chatDB = new pqxx::connection("dbname=Chat user=Admin password=228995 host=127.0.0.1 port=5432");
 
-    pqxx::work chatDBWork(chatDB);
+    pqxx::work* chatDBWork = new pqxx::work(*chatDB);
 
 }
 
