@@ -23,9 +23,9 @@ void Utils::commandToFile(string command, string fileName) {
     neofetchFile.close();
 }
 
-connection DataBaseUtils::establishConnection() {
+/*connection DataBaseUtils::establishConnection() {
     try {
-        connection c("dbname = Chat user = Admin password = 228995 hostaddr = 127.0.0.1 port = 5432");
+        connection c("dbname = Chat user = Admin password = 228995 host = 127.0.0.1 port = 5432");
         if (c.is_open()) {
             cout << "Opened database successfully: " << c.dbname() << endl;
             return c;
@@ -44,4 +44,4 @@ void DataBaseUtils::closeConnection(connection c) {
 
 pqxx::work DataBaseUtils::startWork(pqxx::connection c) {
     return pqxx::work(c);
-}
+}*/
