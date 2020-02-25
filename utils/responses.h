@@ -44,7 +44,7 @@ namespace Responses {
         return 0;
     }
 
-    int rLogin(const Http::Request &request) {
+    int rLogin(const Http::Request &request, User &user) {
         string nickname = request.headers().getRaw("nickname").value();
         string password = request.headers().getRaw("password").value();
 
@@ -57,6 +57,18 @@ namespace Responses {
             ControllerDB::chatDBWork->exec1(sql);
             ControllerDB::chatDBWork->commit();
             ControllerDB::chatDBWork = new pqxx::work(*ControllerDB::chatDB);
+
+            //Get user ID
+            sql = "SELECT user_id, avatar FROM public.user WHERE nickname=" + ControllerDB::chatDBWork->quote(nickname);
+
+            cout << sql << endl;
+
+            pqxx::result result = ControllerDB::chatDBWork->exec(sql);
+            ControllerDB::chatDBWork->commit();
+            ControllerDB::chatDBWork = new pqxx::work(*ControllerDB::chatDB);
+
+            user.id = result[0][0].as<std::string>();
+            user.avatar = result[0][1].as<std::string>();
         }
 
         catch (const std::exception &e) {
@@ -64,7 +76,7 @@ namespace Responses {
             return -1;
         }
 
-        //cout << request.body() << endl;
+        cout << request.body() << endl;
         return 0;
     }
 }

@@ -41,6 +41,9 @@ public:
         }
 
         if (request.resource() == "/register" && request.method() == Http::Method::Post) {
+
+            //cout << request.body() << endl;
+
             if (Responses::rRegister(request) == 0)
             response.send(Http::Code::Ok);
             else
@@ -49,10 +52,18 @@ public:
         }
 
         if (request.resource() == "/login" && request.method() == Http::Method::Get) {
-            if (Responses::rLogin(request) == 0)
+            User user;
+            if (Responses::rLogin(request, user) == 0) {
+                Http::Cookie c("id", user.id);
+                response.cookies().add(c);
+                c = Http::Cookie("avatar", user.avatar);
+                response.cookies().add(c);
+
                 response.send(Http::Code::Ok);
+            }
             else
                 response.send(Http::Code::Unauthorized);
+
             return;
         }
 

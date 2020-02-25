@@ -23,5 +23,11 @@ public:
     static void closeConnection(pqxx::connection c);
 };
 
+class User {
+public:
+    string id;
+    string avatar;
+};
+
 
 #endif //SERVERBACKEND_UTILS_H
