@@ -16,7 +16,6 @@ using namespace std;
 int serverStart(std::string &host) {
     ix::WebSocketServer server(10215, host);
 
-
     server.setOnConnectionCallback(
             [&server](std::shared_ptr<WebSocket> webSocket,
                       std::shared_ptr<ConnectionState> connectionState) {
@@ -89,7 +88,6 @@ int serverStart(std::string &host) {
 
     // Run the server in the background. Server can be stoped by calling server.stop()
     server.start();
-    //cout << "Server successfully started!" << endl;
 
 // Block until server.stop() is called.
     server.wait();

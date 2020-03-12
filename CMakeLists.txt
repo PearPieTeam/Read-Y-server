@@ -21,7 +21,7 @@ include_directories(${HEADER_SEARCH_PATHS})
 
 file(GLOB PISTACHE_SRC "libs/pistache/src/common/*.cc" "libs/pistache/src/client/*.cc" "libs/pistache/src/server/*.cc")
 file(GLOB LIBPQXX_SRC "libs/libpqxx/src/*.cxx")
-file(GLOB UTILS_FILES "utils/chat_server/*.hpp" "utils/db_server/*.cpp" "utils/db_server/*.h" "utils/*.h" "utils/*.cpp")
+file(GLOB UTILS_FILES "utils/chat_server/*.hpp" "utils/db_server/*.cpp" "utils/db_server/*.h" "utils/db_server/*.hpp" "utils/*.h" "utils/*.cpp")
 
 add_subdirectory("libs/pistache")
 add_subdirectory("libs/libpqxx")
