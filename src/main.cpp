@@ -4,14 +4,16 @@
 #include <pistache/endpoint.h>
 #include <pistache/http.h>
 #include "../utils/utils.h"
-#include "../utils/base64.h"
+#include "../utils/db_server/base64.h"
 #include "../utils/executor.h"
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/filewritestream.h>
 #include "../utils/chat.h"
-#include "../utils/responses.h"
+#include "../utils/db_server/responses.h"
+
+#include "../utils/chat_server/chat_server.hpp"
 
 using namespace Pistache;
 using namespace std;
@@ -63,7 +65,6 @@ public:
             }
             else
                 response.send(Http::Code::Unauthorized);
-
             return;
         }
 
@@ -80,28 +81,39 @@ public:
 using connection = pqxx::connection;
 using work = pqxx::work;
 
+void run(Http::Endpoint &server) {
+    server.serve();
+}
+
 int main() {
-    cout << "Server started!" << endl;
-
-    /*pqxx::row r = ControllerDB::chatDBWork->exec1(
-            "SELECT nickname "
-            "FROM public.user "
-            "WHERE user_id='cddc3d74-c003-4019-b30a-2c5521c13f40' ");
-
-    string g = r[0].as<string>();
-
-    cout << g << endl;*/
-
 
     Utils::commandToFile("lsb_release -a", "lsb.txt");
 
     Pistache::Address addr(Pistache::Ipv4::any(), Pistache::Port(9080));
     auto opts = Pistache::Http::Endpoint::options().threads(1);
 
-    Http::Endpoint server(addr);
-    server.init(opts);
-    server.setHandler(Http::make_handler<RequestHandler>());
-    server.serve();
+    auto server = std::make_shared<Http::Endpoint>(addr);
+    server->init(opts);
+    server->setHandler(Http::make_handler<RequestHandler>());
+
+    std::thread db_server_thread([&server] {
+        server->serve();
+    });
+
+    cout << "DB server started successfully!" << endl;
+
+    //TODO
+    string host_address = "127.0.0.1";
+
+    std::thread chat_server_thread([&host_address] {
+        if (serverStart(host_address) == 1)
+            return -1;
+    });
+
+    cout << "Chat server started successfully!" << endl;
+
+    db_server_thread.join();
+    chat_server_thread.join();
 
     return 0;
 }
