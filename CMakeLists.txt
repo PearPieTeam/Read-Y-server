@@ -10,7 +10,7 @@ set(RAPIDJSON_INCLUDE_DIR "libs/pistache/third-party/rapidjson/include")
 set(LIBPQXX_INCLUDE_DIR "libs/libpqxx/include")
 set(LIBPQXX_HEADER_INCLUDE_DIR "/usr/include/postgresql")
 set(LIBPQXX_HEADER_BUILD_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/libs/libpqxx/include")
-set(IXWEBSOCKET_INCLUDE_DIR "libs/IXWebSocket")
+set(IXWEBSOCKET_INCLUDE_DIR "libs/ixwebsocket")
 
 set(HEADER_SEARCH_PATHS ${PROJECT_INCLUDE_DIR} ${PISTACHE_INCLUDE_DIR} ${RAPIDJSON_INCLUDE_DIR} ${LIBPQXX_INCLUDE_DIR} ${LIBPQXX_HEADER_INCLUDE_DIR} ${LIBPQXX_HEADER_BUILD_INCLUDE_DIR})
 
@@ -25,7 +25,7 @@ file(GLOB UTILS_FILES "utils/chat_server/*.hpp" "utils/db_server/*.cpp" "utils/d
 
 add_subdirectory("libs/pistache")
 add_subdirectory("libs/libpqxx")
-add_subdirectory("libs/IXWebSocket")
+add_subdirectory("libs/ixwebsocket")
 
 link_libraries(ixwebsocket)
 
