@@ -6,6 +6,8 @@
 #define SERVERBACKEND_RESPONSES_H
 
 #include "databaseController.h"
+#include <rapidjson/rapidjson.h>
+#include <rapidjson/document.h>
 
 using namespace Pistache;
 using namespace std;

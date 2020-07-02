@@ -16,6 +16,15 @@ public:
     static void commandToFile(string command, string fileName);
 };
 
+class DataBaseUtils {
+public:
+    static pqxx::connection establishConnection();
+
+    static pqxx::work startWork(pqxx::connection c);
+
+    static void closeConnection(pqxx::connection c);
+};
+
 class User {
 public:
     string id;

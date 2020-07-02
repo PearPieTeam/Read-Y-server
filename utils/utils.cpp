@@ -15,11 +15,9 @@ void Utils::commandToFile(string command, string fileName) {
     char cstr[s.size() + 1];
 
     strcpy(cstr, s.c_str());
-
     std::cout << system(cstr) << std::endl;
     ifstream neofetchFile;
     neofetchFile.open(fileName);
-
     while (!neofetchFile.eof())
         getline(neofetchFile, fileName);
     neofetchFile.close();
