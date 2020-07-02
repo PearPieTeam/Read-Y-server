@@ -63,8 +63,8 @@ HTTP_PROTOTYPE(RequestHandler)
     }
 
     //Timeout
-    void onTimeout(const Http::Request &reqest, Http::ResponseWriter response) override {
-        UNUSED(reqest)
+    void onTimeout(const Http::Request &request, Http::ResponseWriter response) override {
+        UNUSED(request)
         response.send(Http::Code::Request_Timeout, "Timeout").then([=](ssize_t) {}, PrintException());
     }
 };

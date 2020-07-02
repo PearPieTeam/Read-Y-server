@@ -21,7 +21,18 @@ using namespace rapidjson;
 using connection = pqxx::connection;
 using work = pqxx::work;
 
-int main() {
+int main(int argc, char **argv) {
+    if (argc < 3)
+        return -1;
+
+    string host_address;
+
+    //Initialize
+    if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "-host"))
+        host_address = argv[2];
+    else
+        return -1;
+
     Utils::commandToFile("lsb_release -a", "lsb.txt");
 
     Pistache::Address addr(Pistache::Ipv4::any(), Pistache::Port(9080));
@@ -36,9 +47,6 @@ int main() {
     });
 
     cout << "DB server started successfully!" << endl;
-
-    //TODO
-    string host_address = "127.0.0.1";
 
     std::thread chat_server_thread([&host_address] {
         if (serverStart(host_address) == 1)

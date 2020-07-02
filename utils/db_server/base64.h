@@ -10,8 +10,9 @@
 
 class Base64 {
 public:
-    static const std::string encode(const void* data, const size_t &len);
-    static const std::string decode(const void* data, const size_t &len);
+    static const std::string encode(const void *data, const size_t &len);
+
+    static const std::string decode(const void *data, const size_t &len);
 };
 
 

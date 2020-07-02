@@ -10,7 +10,7 @@ namespace ControllerDB {
     pqxx::connection *chatDB = new pqxx::connection(
             "dbname=ReadY_DB user=Admin password=228995 host=127.0.0.1 port=5432");
 
-    pqxx::work* chatDBWork = new pqxx::work(*chatDB);
+    pqxx::work *chatDBWork = new pqxx::work(*chatDB);
 
 }
 
