@@ -1,14 +1,9 @@
 #include <iostream>
 #include <iomanip>
-#include <fstream>
 #include <pistache/endpoint.h>
 #include <pistache/http.h>
 #include "../utils/utils.h"
 #include "../utils/db_server/base64.h"
-#include "../utils/executor.h"
-#include <rapidjson/document.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/stringbuffer.h>
 #include <rapidjson/filewritestream.h>
 
 #include "../utils/chat_server/chat_server.hpp"
