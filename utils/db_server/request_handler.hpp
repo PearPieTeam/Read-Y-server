@@ -59,6 +59,28 @@ HTTP_PROTOTYPE(RequestHandler)
             return;
         }
 
+        if (request.resource() == "/register" && request.method() == Http::Method::Post) {
+
+            //cout << request.body() << endl;
+
+            if (Responses::rRegister(request) == 0)
+                response.send(Http::Code::Ok);
+            else
+                response.send(Http::Code::Bad_Request);
+            return;
+        }
+
+        if (request.resource() == "/rooms/add" && request.method() == Http::Method::Post) {
+
+            //cout << request.body() << endl;
+
+            if (Responses::rRoomAdd(request) == 0)
+                response.send(Http::Code::Ok);
+            else
+                response.send(Http::Code::Bad_Request);
+            return;
+        }
+
         response.send(Http::Code::Forbidden, "There's nothing here =_=");
     }
 

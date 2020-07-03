@@ -81,6 +81,43 @@ namespace Responses {
         cout << request.body() << endl;
         return 0;
     }
+
+    int rRoomAdd(const Http::Request &request) {
+        Document document;
+        document.Parse(request.body().c_str());
+
+        string room_name = document["room_name"].GetString();
+        string nickname = document["nickname"].GetString();
+        string password = document["password"].GetString();
+
+        string sql = "SELECT user_id FROM public.user WHERE nickname=" + ControllerDB::chatDBWork->quote(nickname);
+
+        pqxx::result result = ControllerDB::chatDBWork->exec(sql);
+        ControllerDB::chatDBWork->commit();
+        ControllerDB::chatDBWork = new pqxx::work(*ControllerDB::chatDB);
+
+        string id = result[0][0].as<std::string>();
+
+        sql = "INSERT INTO public.room (room_id, user_admin_id, user_count, room_name) VALUES (uuid_generate_v4(), " +
+              ControllerDB::chatDBWork->quote(id) + ", " + ControllerDB::chatDBWork->quote(1) +
+              ", " + ControllerDB::chatDBWork->quote(room_name) + ")";
+
+        try {
+            ControllerDB::chatDBWork->exec0(sql);
+            ControllerDB::chatDBWork->commit();
+            ControllerDB::chatDBWork = new pqxx::work(*ControllerDB::chatDB);
+        }
+
+        catch (const pqxx::sql_error &e) {
+            ControllerDB::chatDBWork->abort();
+            ControllerDB::chatDBWork = new pqxx::work(*ControllerDB::chatDB);
+            cerr << "SQL error: " << e.what() << endl
+                 << "Query was: " << e.query() << endl;
+            return -1;
+        }
+
+        return 0;
+    }
 }
 
 #endif //SERVERBACKEND_RESPONSES_H
